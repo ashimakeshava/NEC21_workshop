@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.nec21_eyetracking.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "G:\\Unity Projects\\NEC21_eyetracking\\NEC21_eyetracking unity\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "NEC21_eyetracking [Testing]"
+        }
+      }
+    }
+  ]
+}
