@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,11 @@ public class EyetrackingManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        _eyetrackingDevice = GetComponent<EyetrackingDevice>(); //Only if you add the Eyetracking device on the same Gameobject!
+    }
+
 
     public void StartEyetrackingRecording()
     {
@@ -41,7 +47,7 @@ public class EyetrackingManager : MonoBehaviour
         
     }
 
-    public void StopCalibration()
+    public void StartValidation()
     {
         
     }
