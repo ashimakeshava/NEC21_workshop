@@ -6,34 +6,40 @@ public class EyeTrackingDataFrame
 {
    //Unix Time Stamp
 
-   public double Timestamp;
+   public double timestamp;
    
    //HMD Data
-   public Vector3 HMDPosition;      //be careful for serialization, Vector3 might not be serializable with your approach
-   public Quaternion HMDRotation;
-   public Vector3 NoseVector; //transport.forward
+   public Vector3 hmdPosition;      //be careful for serialization, Vector3 might not be serializable with your approach
+   public Quaternion hmdRotation;
+   public Vector3 noseVector; //transport.forward
    
-   //Gaze Validty - Data Cleanse
+   //Gaze Validty - Data Cleanse - Flags interpreted as bit Mask
+   public ulong leftValidityMask;
 
-
+   public ulong rightValidtyMask;
+   
+   
    //LeftEye
-   public Vector3 localPositionLeft;
-   public Vector3 localDirectionLeft;
-   public Vector3 globalPositionLeft;
-   public Vector3 globalDirectionLeft;
+   public Vector3 eyePositionLeftLocal;
+   public Vector3 eyeDirectionLeftLocal;
+   public Vector3 eyePositionLeftWorld;
+   public Vector3 eyeDirectionLeftWorld;
+   public float eyeOpennessLeft;
+   public float eyePupilDiameterLeft;
    
    //rightEye
-   public Vector3 localPositionRight;
-   public Vector3 localDirectionRight;
-   public Vector3 globalPositionRight;
-   public Vector3 globalDirectionRight;
-   
+   public Vector3 eyePositionRightLocal;
+   public Vector3 eyeDirectionRightLocal;
+   public Vector3 eyePositionRightWorld;
+   public Vector3 eyeDirectionRightWorld;
+   public float eyeOpennessRight;
+   public float eyePupilDiameterRight;
    
    //combined Gaze- " combined eye" - cyclope eye
-   public Vector3 localPositionGaze;
-   public Vector3 localDirectionGaze;
-   public Vector3 globalPositionGaze;
-   public Vector3 globalDirectionGaze;
+   public Vector3 EyePositionCombinedLocal;
+   public Vector3 EyeDirectionCombinedLocal;
+   public Vector3 EyePositionCombinedWorld;
+   public Vector3 EyeDirectionCombinedWorld;
    
    
    //Raycast Data normaly done just with the Gaze instead of single eye
@@ -48,3 +54,5 @@ public class  HitObjectInfo
    public Vector3 ObjectPosition;
    public string ObjectName;
 }
+
+
