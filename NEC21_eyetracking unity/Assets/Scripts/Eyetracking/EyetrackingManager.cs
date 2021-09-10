@@ -27,7 +27,7 @@ public class EyetrackingManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        _hmdTransform = Camera.main.transform;
+//        _hmdTransform = Camera.main.transform;
     }
 
     private void Start()
@@ -46,6 +46,11 @@ public class EyetrackingManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             StartEyetrackingRecording();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            StopEyetrackingRecording();
         }
 
         if (Input.GetKeyDown(KeyCode.Q))

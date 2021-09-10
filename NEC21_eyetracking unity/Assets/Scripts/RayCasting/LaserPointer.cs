@@ -73,7 +73,7 @@ public class LaserPointer : MonoBehaviour
 
 
 
-        //render Ray
+        //render Ray - only for cosmetics not needed for understanding
         lineRenderer.gameObject.SetActive(drawRay);
         TargetEffect.SetActive(drawRay);
         if (drawRay)
@@ -88,7 +88,7 @@ public class LaserPointer : MonoBehaviour
             }
         }
         
-        //show information on Screen
+        //show information on Screen - only for cosmetics not needed for understanding
 
         if (showInfo)
         {

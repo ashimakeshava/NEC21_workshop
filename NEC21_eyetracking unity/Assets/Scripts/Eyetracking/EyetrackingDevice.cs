@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,26 @@ public class EyetrackingDevice : MonoBehaviour
     private int _penetratedLayer;
     private Transform _hmdTransform;
 
-    private List<EyeTrackingDataFrame> _eyeTrackingDataFrames;
+    [SerializeField] private List<EyeTrackingDataFrame> _eyeTrackingDataFrames;
+    
     //Only for a VIVE Pro EYE! you have to addapt this if you want another form of eyetracker
+
+    private void Start()
+    {
+        _eyeTrackingDataFrames = new List<EyeTrackingDataFrame>();
+    }
+    
+    
+    public void StartCalibration()
+    {
+        if (_isRecording|| _isCalibrating) return;
+        _isCalibrating = true; //For Sranipal not needed, since it is pausing unity.... anyway
+
+        _isCalibrated= SRanipal_Eye_v2.LaunchEyeCalibration();
+        _isCalibrating = false;
+    }
+    
+    
     public void StartRecording()
     {
         if (_isRecording)
@@ -24,11 +43,7 @@ public class EyetrackingDevice : MonoBehaviour
             return;
         }
 
-        if (!_isCalibrated)
-        {
-            Debug.LogWarning("The Device is not calibrated, aborted");
-            return;
-        }
+       
         
         _isRecording = true;
         
@@ -38,26 +53,43 @@ public class EyetrackingDevice : MonoBehaviour
     private IEnumerator Recording()
     {
         while (_isRecording)
-        { 
+        {
             EyeTrackingDataFrame frame = new EyeTrackingDataFrame();
 
             frame.timestamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
 
             VerboseData data;
+            
+            
+            //HMD Data
+
+            frame.hmdPosition = _hmdTransform.transform.position;
+            frame.hmdRotation = _hmdTransform.transform.rotation.eulerAngles;
+            frame.noseVector = _hmdTransform.transform.forward;
+            
+            
             SRanipal_Eye_v2.GetVerboseData(out data); //Depending on using Sranipal_eye_v2 or v1 //Here you get the device data
 
             //fill dataframe  with data from the verbose data
             
            
             var leftEyeData = data.left;
-            var rightEyeData = data.left;
+            var rightEyeData = data.right;
             var combinedData = data.combined;
             
-            //validty
+            //validity
+
+            #region validity
 
             frame.leftValidityMask = leftEyeData.eye_data_validata_bit_mask;
 
+            leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY);
+
             frame.rightValidtyMask = rightEyeData.eye_data_validata_bit_mask;
+
+            #endregion
+
+           
             
             // left eye data
             
@@ -86,7 +118,7 @@ public class EyetrackingDevice : MonoBehaviour
             frame.eyeOpennessRight = rightEyeData.eye_openness;
             frame.eyePupilDiameterRight = rightEyeData.pupil_diameter_mm;
             
-            //combined eye
+            //combined eye - average the eye position and direction
             
             Vector3 coordinateAdaptedGazeDirectionCombined = new Vector3(combinedData.eye_data.gaze_direction_normalized.x * -1,  combinedData.eye_data.gaze_direction_normalized.y, combinedData.eye_data.gaze_direction_normalized.z);
             frame.EyePositionCombinedLocal = combinedData.eye_data.gaze_origin_mm;
@@ -95,24 +127,26 @@ public class EyetrackingDevice : MonoBehaviour
             frame.EyePositionCombinedWorld = combinedData.eye_data.gaze_origin_mm / 1000 + _hmdTransform.position;
             frame.EyeDirectionCombinedWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionCombined;
 
-            frame.hitInfos =
-                GetHitObjects(frame.EyePositionCombinedWorld, frame.EyeDirectionCombinedWorld, _penetratedLayer);
+            if (_penetratedLayer > 1)
+            {
+                //RaycastAll
+                frame.hitInfos =
+                    GetHitObjects(frame.EyePositionCombinedWorld, frame.EyeDirectionCombinedWorld, _penetratedLayer);
+            }
+            else
+            {
+                //simple Raycast
+                
+            }
+            
             
             
             _eyeTrackingDataFrames.Add(frame);
-            
             yield return new WaitForSeconds(_sampleRate);
         }
     }
 
-    public void StartCalibration()
-    {
-        if (_isRecording|| _isCalibrating) return;
-        _isCalibrating = true; //For Sranipal not needed, since it is pausing unity.... anyway
-
-        _isCalibrated= SRanipal_Eye_v2.LaunchEyeCalibration();
-        _isCalibrating = false;
-    }
+    
     
     public void StopRecording()
     {
@@ -140,11 +174,12 @@ public class EyetrackingDevice : MonoBehaviour
 
         RaycastHit[] raycastHits = Physics.RaycastAll(origin, direction);
         
+        
         raycastHits = raycastHits.OrderBy(x=>x.distance).ToArray();
 
         for (int i = 0; i < penetratedLayers; i++)
         {
-            if (i > raycastHits.Length)
+            if (i >= raycastHits.Length)
                 break;
             
             HitObjectInfo hitObjectInfo = new HitObjectInfo();
@@ -152,10 +187,13 @@ public class EyetrackingDevice : MonoBehaviour
             hitObjectInfo.hitPosition = raycastHits[i].point;
             hitObjectInfo.ObjectPosition = raycastHits[i].transform.position;
             hitObjectInfos.Add(hitObjectInfo);
+            
         }
 
         return hitObjectInfos;
     }
+    
+    
 
 
     public void ClearData()

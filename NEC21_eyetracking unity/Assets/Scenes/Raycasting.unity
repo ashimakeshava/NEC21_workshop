@@ -1349,8 +1349,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61812d9ec182cef4ba45f8deb7a5de2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawRay: 0
-  RayCastAll: 1
+  drawRay: 1
+  RayCastAll: 0
   showInfo: 0
   maxDistance: 5
   origin: {fileID: 1165255665}
@@ -2250,7 +2250,7 @@ Transform:
   m_GameObject: {fileID: 1430878831}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.936, y: 1.012, z: -2.69}
-  m_LocalScale: {x: 3.85, y: 2.05, z: 0.36}
+  m_LocalScale: {x: 3.85, y: 2.05, z: 0.05}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 15

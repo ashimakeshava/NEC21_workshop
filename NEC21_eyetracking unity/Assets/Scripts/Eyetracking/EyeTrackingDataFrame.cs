@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EyeTrackingDataFrame
+[Serializable] public class EyeTrackingDataFrame
 {
    //Unix Time Stamp
 
@@ -10,7 +11,7 @@ public class EyeTrackingDataFrame
    
    //HMD Data
    public Vector3 hmdPosition;      //be careful for serialization, Vector3 might not be serializable with your approach
-   public Quaternion hmdRotation;
+   public Vector3 hmdRotation;
    public Vector3 noseVector; //transport.forward
    
    //Gaze Validty - Data Cleanse - Flags interpreted as bit Mask
@@ -48,11 +49,17 @@ public class EyeTrackingDataFrame
 
 
 
-public class  HitObjectInfo
+[Serializable] public class  HitObjectInfo
 {
    public Vector3 hitPosition;
    public Vector3 ObjectPosition;
    public string ObjectName;
+}
+
+[Serializable]
+public class Validty
+{
+   public bool val;
 }
 
 
