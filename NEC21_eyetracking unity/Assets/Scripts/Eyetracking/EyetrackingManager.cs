@@ -57,11 +57,17 @@ public class EyetrackingManager : MonoBehaviour
         {
             StartCalibration();
         }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            SaveDataToDisk();
+        }
         
     }
 
     public void StartEyetrackingRecording()
     {
+        Debug.Log("Start Recording...");
         _eyetrackingDevice.StartRecording();
     }
 
@@ -83,6 +89,13 @@ public class EyetrackingManager : MonoBehaviour
     public void StartValidation()
     {
         
+    }
+
+
+    public void SaveDataToDisk()
+    {
+        _eyetrackingDevice.StopRecording();
+        DataSavingManager.Instance.SaveList(_eyetrackingDevice.GetCurrentFrames(), "Test session " + TimeManager.Instance.GetCurrentUnixTimeStamp());
     }
     
 

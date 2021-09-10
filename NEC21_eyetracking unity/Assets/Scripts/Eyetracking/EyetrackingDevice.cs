@@ -192,9 +192,12 @@ public class EyetrackingDevice : MonoBehaviour
 
         return hitObjectInfos;
     }
-    
-    
 
+
+    public List<EyeTrackingDataFrame> GetCurrentFrames()
+    {
+        return _eyeTrackingDataFrames;
+    }
 
     public void ClearData()
     {
