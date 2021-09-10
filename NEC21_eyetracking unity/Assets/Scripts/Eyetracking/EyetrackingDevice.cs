@@ -14,7 +14,7 @@ public class EyetrackingDevice : MonoBehaviour
     private int _penetratedLayer;
     private Transform _hmdTransform;
 
-    private List<EyeTrackingDataFrame> _eyeTrackingDataFrame;
+    private List<EyeTrackingDataFrame> _eyeTrackingDataFrames;
     //Only for a VIVE Pro EYE! you have to addapt this if you want another form of eyetracker
     public void StartRecording()
     {
@@ -38,70 +38,70 @@ public class EyetrackingDevice : MonoBehaviour
     private IEnumerator Recording()
     {
         while (_isRecording)
-        {
+        { 
             EyeTrackingDataFrame frame = new EyeTrackingDataFrame();
 
-        frame.timestamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+            frame.timestamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
 
-        VerboseData data;
-        SRanipal_Eye_v2.GetVerboseData(out data); //Depending on using Sranipal_eye_v2 or v1 //Here you get the device data
+            VerboseData data;
+            SRanipal_Eye_v2.GetVerboseData(out data); //Depending on using Sranipal_eye_v2 or v1 //Here you get the device data
 
-        //fill dataframe  with data from the verbose data
-        
-       
-        var leftEyeData = data.left;
-        var rightEyeData = data.left;
-        var combinedData = data.combined;
-        
-        //validty
+            //fill dataframe  with data from the verbose data
+            
+           
+            var leftEyeData = data.left;
+            var rightEyeData = data.left;
+            var combinedData = data.combined;
+            
+            //validty
 
-        frame.leftValidityMask = leftEyeData.eye_data_validata_bit_mask;
+            frame.leftValidityMask = leftEyeData.eye_data_validata_bit_mask;
 
-        frame.rightValidtyMask = rightEyeData.eye_data_validata_bit_mask;
-        
-        // left eye data
-        
-        Vector3 coordinateAdaptedGazeDirectionLeft = new Vector3(leftEyeData.gaze_direction_normalized.x * -1,  leftEyeData.gaze_direction_normalized.y, leftEyeData.gaze_direction_normalized.z);
-        //local
-        frame.eyePositionLeftLocal= leftEyeData.gaze_origin_mm;
-        frame.eyeDirectionLeftLocal = coordinateAdaptedGazeDirectionLeft;
-        //global
-        frame.eyePositionLeftWorld= leftEyeData.gaze_origin_mm / 1000 + _hmdTransform.position;
-        frame.eyeDirectionLeftWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionLeft;
-        
-        // Openness and Pupil Diameter
-        frame.eyeOpennessLeft = leftEyeData.eye_openness;
-        frame.eyePupilDiameterLeft = leftEyeData.pupil_diameter_mm;
-        
-        //right eye data
-        
-        Vector3 coordinateAdaptedGazeDirectionRight = new Vector3(rightEyeData.gaze_direction_normalized.x * -1,  rightEyeData.gaze_direction_normalized.y, rightEyeData.gaze_direction_normalized.z);
-        frame.eyePositionRightLocal = rightEyeData.gaze_origin_mm;
-        frame.eyeDirectionRightLocal = coordinateAdaptedGazeDirectionRight;
-        //global
-        frame.eyePositionRightWorld = rightEyeData.gaze_origin_mm / 1000 + _hmdTransform.position;
-        frame.eyeDirectionRightWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionRight;
+            frame.rightValidtyMask = rightEyeData.eye_data_validata_bit_mask;
+            
+            // left eye data
+            
+            Vector3 coordinateAdaptedGazeDirectionLeft = new Vector3(leftEyeData.gaze_direction_normalized.x * -1,  leftEyeData.gaze_direction_normalized.y, leftEyeData.gaze_direction_normalized.z);
+            //local
+            frame.eyePositionLeftLocal= leftEyeData.gaze_origin_mm;
+            frame.eyeDirectionLeftLocal = coordinateAdaptedGazeDirectionLeft;
+            //global
+            frame.eyePositionLeftWorld= leftEyeData.gaze_origin_mm / 1000 + _hmdTransform.position;
+            frame.eyeDirectionLeftWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionLeft;
+            
+            // Openness and Pupil Diameter
+            frame.eyeOpennessLeft = leftEyeData.eye_openness;
+            frame.eyePupilDiameterLeft = leftEyeData.pupil_diameter_mm;
+            
+            //right eye data
+            
+            Vector3 coordinateAdaptedGazeDirectionRight = new Vector3(rightEyeData.gaze_direction_normalized.x * -1,  rightEyeData.gaze_direction_normalized.y, rightEyeData.gaze_direction_normalized.z);
+            frame.eyePositionRightLocal = rightEyeData.gaze_origin_mm;
+            frame.eyeDirectionRightLocal = coordinateAdaptedGazeDirectionRight;
+            //global
+            frame.eyePositionRightWorld = rightEyeData.gaze_origin_mm / 1000 + _hmdTransform.position;
+            frame.eyeDirectionRightWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionRight;
 
-        // Openness and Pupil Diameter
-        frame.eyeOpennessRight = rightEyeData.eye_openness;
-        frame.eyePupilDiameterRight = rightEyeData.pupil_diameter_mm;
-        
-        //combined eye
-        
-        Vector3 coordinateAdaptedGazeDirectionCombined = new Vector3(combinedData.eye_data.gaze_direction_normalized.x * -1,  combinedData.eye_data.gaze_direction_normalized.y, combinedData.eye_data.gaze_direction_normalized.z);
-        frame.EyePositionCombinedLocal = combinedData.eye_data.gaze_origin_mm;
-        frame.EyeDirectionCombinedLocal = coordinateAdaptedGazeDirectionCombined;
+            // Openness and Pupil Diameter
+            frame.eyeOpennessRight = rightEyeData.eye_openness;
+            frame.eyePupilDiameterRight = rightEyeData.pupil_diameter_mm;
+            
+            //combined eye
+            
+            Vector3 coordinateAdaptedGazeDirectionCombined = new Vector3(combinedData.eye_data.gaze_direction_normalized.x * -1,  combinedData.eye_data.gaze_direction_normalized.y, combinedData.eye_data.gaze_direction_normalized.z);
+            frame.EyePositionCombinedLocal = combinedData.eye_data.gaze_origin_mm;
+            frame.EyeDirectionCombinedLocal = coordinateAdaptedGazeDirectionCombined;
 
-        frame.EyePositionCombinedWorld = combinedData.eye_data.gaze_origin_mm / 1000 + _hmdTransform.position;
-        frame.EyeDirectionCombinedWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionCombined;
+            frame.EyePositionCombinedWorld = combinedData.eye_data.gaze_origin_mm / 1000 + _hmdTransform.position;
+            frame.EyeDirectionCombinedWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionCombined;
 
-        frame.hitInfos =
-            GetHitObjects(frame.EyePositionCombinedWorld, frame.EyeDirectionCombinedWorld, _penetratedLayer);
-        
-        
-        _eyeTrackingDataFrame.Add(frame);
-        
-        yield return new WaitForSeconds(_sampleRate);
+            frame.hitInfos =
+                GetHitObjects(frame.EyePositionCombinedWorld, frame.EyeDirectionCombinedWorld, _penetratedLayer);
+            
+            
+            _eyeTrackingDataFrames.Add(frame);
+            
+            yield return new WaitForSeconds(_sampleRate);
         }
     }
 
@@ -160,6 +160,6 @@ public class EyetrackingDevice : MonoBehaviour
 
     public void ClearData()
     {
-        _eyeTrackingDataFrame.Clear();
+        _eyeTrackingDataFrames.Clear();
     }
 }

@@ -40,6 +40,20 @@ public class EyetrackingManager : MonoBehaviour
         _eyetrackingDevice.SetPenetratedLayers(SetPenetratedLayers);
     }
 
+    //We use this Update method for Debug purposes, for a real experiment, call those functions in a Experiment Manager
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            StartEyetrackingRecording();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            StartCalibration();
+        }
+        
+    }
 
     public void StartEyetrackingRecording()
     {
