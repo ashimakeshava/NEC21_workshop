@@ -67,6 +67,8 @@ public class EyetrackingDevice : MonoBehaviour
             frame.hmdRotation = _hmdTransform.transform.rotation.eulerAngles;
             frame.noseVector = _hmdTransform.transform.forward;
             
+         
+            
             
             SRanipal_Eye_v2.GetVerboseData(out data); //Depending on using Sranipal_eye_v2 or v1 //Here you get the device data
 
@@ -78,18 +80,45 @@ public class EyetrackingDevice : MonoBehaviour
             var combinedData = data.combined;
             
             //validity
-
-            #region validity
+            //
 
             frame.leftValidityMask = leftEyeData.eye_data_validata_bit_mask;
+            
+            frame.leftDataGazeOriginValidity =
+                leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY);
 
-            leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY);
+            frame.leftDataEyeOpennessValidity =
+                leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY);
 
-            frame.rightValidtyMask = rightEyeData.eye_data_validata_bit_mask;
+            frame.leftDataGazeDirectionValidity =
+                leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY);
 
-            #endregion
+            frame.leftDataPupilDiameterValidity =
+                leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_DIAMETER_VALIDITY);
 
-           
+            frame.leftDataPupilPositionInSensorAreaValidity =
+                leftEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY);
+            
+            
+            //right eye
+
+            frame.rightValidityMask = rightEyeData.eye_data_validata_bit_mask;
+            
+            frame.rightDataGazeOriginValidity =
+                rightEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY);
+
+            frame.rightDataEyeOpennessValidity =
+                rightEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY);
+
+            frame.rightDataGazeDirectionValidity =
+                rightEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY);
+
+            frame.rightDataPupilDiameterValidity =
+                rightEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_DIAMETER_VALIDITY);
+
+            frame.rightDataPupilPositionInSensorAreaValidity =
+                rightEyeData.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY);
+            
             
             // left eye data
             
@@ -127,6 +156,8 @@ public class EyetrackingDevice : MonoBehaviour
             frame.EyePositionCombinedWorld = combinedData.eye_data.gaze_origin_mm / 1000 + _hmdTransform.position;
             frame.EyeDirectionCombinedWorld = _hmdTransform.rotation * coordinateAdaptedGazeDirectionCombined;
 
+
+            frame.hitInfos = new List<HitObjectInfo>();
             if (_penetratedLayer > 1)
             {
                 //RaycastAll
@@ -135,8 +166,16 @@ public class EyetrackingDevice : MonoBehaviour
             }
             else
             {
-                //simple Raycast
-                
+                HitObjectInfo hitObjectInfo = new HitObjectInfo();
+                RaycastHit hit;
+                Physics.Raycast(frame.EyePositionCombinedWorld, frame.EyeDirectionCombinedWorld, out hit);
+
+                hitObjectInfo.ObjectName = hit.collider.name;
+                hitObjectInfo.hitPosition = hit.point;
+                hitObjectInfo.ObjectPosition = hit.collider.transform.position;
+                frame.singleHitInfo = hitObjectInfo;
+                //frame.hitInfos.Add(hitObjectInfo);
+
             }
             
             

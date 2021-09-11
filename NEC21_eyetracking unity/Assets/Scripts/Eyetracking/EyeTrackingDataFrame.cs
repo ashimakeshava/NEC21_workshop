@@ -14,12 +14,23 @@ using UnityEngine;
    public Vector3 hmdRotation;
    public Vector3 noseVector; //transport.forward
    
-   //Gaze Validty - Data Cleanse - Flags interpreted as bit Mask
+   //Gaze Validity - Data Cleanse - Flags interpreted as bit Mask
+   //validity left
    public ulong leftValidityMask;
+   public bool leftDataGazeOriginValidity; /** The validity of the origin of gaze of the eye data */
+   public bool leftDataGazeDirectionValidity; /** The validity of the direction of gaze of the eye data */
+   public bool leftDataPupilDiameterValidity; /** The validity of the diameter of gaze of the eye data */
+   public bool leftDataEyeOpennessValidity; /** The validity of the openness of the eye data */
+   public bool leftDataPupilPositionInSensorAreaValidity;  /** The validity of normalized position of pupil */
+   //public ulong bitmask; // should be order as above (LSB top, MSB bottom) 
 
-   public ulong rightValidtyMask;
-   
-   
+   //validity right
+   public ulong rightValidityMask;
+   public bool rightDataGazeOriginValidity; /** The validity of the origin of gaze of the eye data */
+   public bool rightDataGazeDirectionValidity; /** The validity of the direction of gaze of the eye data */
+   public bool rightDataPupilDiameterValidity; /** The validity of the diameter of gaze of the eye data */
+   public bool rightDataEyeOpennessValidity; /** The validity of the openness of the eye data */
+   public bool rightDataPupilPositionInSensorAreaValidity;  /** The validity of normalized position of pupil */
    //LeftEye
    public Vector3 eyePositionLeftLocal;
    public Vector3 eyeDirectionLeftLocal;
@@ -41,8 +52,8 @@ using UnityEngine;
    public Vector3 EyeDirectionCombinedLocal;
    public Vector3 EyePositionCombinedWorld;
    public Vector3 EyeDirectionCombinedWorld;
-   
-   
+
+   public HitObjectInfo singleHitInfo;
    //Raycast Data normaly done just with the Gaze instead of single eye
    public List<HitObjectInfo> hitInfos;
 }

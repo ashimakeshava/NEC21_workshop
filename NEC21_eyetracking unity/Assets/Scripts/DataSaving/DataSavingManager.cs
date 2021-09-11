@@ -115,12 +115,14 @@ public class DataSavingManager : MonoBehaviour
         FileStream fileStream= new FileStream(path, FileMode.Create);
         using (var fileWriter= new StreamWriter(fileStream))
         {
+            fileWriter.Write("[");
             foreach (var line in stringList)
             {
                 fileWriter.Write(line);
                 fileWriter.Write(",");
                 fileWriter.WriteLine();
             }
+            fileWriter.Write("]");
         }
         
         
