@@ -1,0 +1,2 @@
+analysis/day2/data/NEC21_ActiveParticipant.csv filter=lfs diff=lfs merge=lfs -text
+analysis/day2/data/NEC21_SeatedParticipant.csv filter=lfs diff=lfs merge=lfs -text
